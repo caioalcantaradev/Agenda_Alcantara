@@ -1,45 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 import LoginButton from "@/components/LoginButton";
 
 export default function LoginPage() {
-  const { login, isAuthenticated, loading } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
-    }
-  }, [isAuthenticated, router]);
-
-  useEffect(() => {
-    const code = searchParams.get("code");
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
     if (code) {
-      handleGoogleCallback(code);
-    }
-  }, [searchParams]);
-
-  const handleGoogleCallback = async (code: string) => {
-    try {
-      await login(code);
+      console.log("Código OAuth recebido, redirecionando...");
+      // Por enquanto apenas log, depois implementamos o callback
       router.push("/");
-    } catch (error) {
-      console.error("Erro no login:", error);
-      alert("Erro no login. Tente novamente.");
     }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
-      </div>
-    );
-  }
+  }, [router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">

@@ -27,13 +27,22 @@ Um aplicativo web de agenda compartilhada integrado com Google Calendar, permiti
 - Conta Google com acesso ao Google Calendar
 - Google Cloud Console configurado
 
+### 📥 Instalando MongoDB (Windows)
+
+Se você não tem o MongoDB instalado:
+
+1. **Download**: Baixe o MongoDB Community Server em [mongodb.com/download](https://www.mongodb.com/try/download/community)
+2. **Instalação**: Execute o instalador e siga as instruções
+3. **Verificar**: Abra o terminal e teste `mongod --version`
+4. **Alternativa**: Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (gratuito) e configure no `.env`
+
 ## 🛠️ Instalação
 
 ### 1. Clone o repositório
 
 ```bash
-git clone <seu-repositorio>
-cd agenda_alcantara
+git clone https://github.com/caioalcantaradev/Agenda_Alcantara.git
+cd Agenda_Alcantara
 ```
 
 ### 2. Configure o Backend
@@ -170,10 +179,13 @@ O frontend estará rodando em `http://localhost:3000`
 ## 📝 Funcionalidades
 
 - ✅ Login com Google OAuth
-- ✅ Calendário mensal interativo
-- ✅ Criação de compromissos
-- ✅ Visualização de eventos
+- ✅ Calendário mensal, semanal e diário interativo
+- ✅ Criação, edição e exclusão de compromissos
+- ✅ Visualização detalhada de eventos
 - ✅ Interface responsiva
+- ✅ Modo escuro/claro
+- ✅ Destaque de feriados brasileiros
+- ✅ Detecção de conflitos de horários
 - ✅ Sincronização com Google Calendar
 - ✅ Compartilhamento entre usuários
 

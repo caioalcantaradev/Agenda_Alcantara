@@ -14,9 +14,12 @@ export const useAuth = () => {
         } catch (error) {
           console.error("Erro ao verificar autenticação:", error);
           authService.logout();
+        } finally {
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     checkAuth();
