@@ -27,20 +27,38 @@
 Na tela de configuração, ajuste:
 
 #### **Framework Preset**
-- Deixe: **Next.js** (detectado automaticamente)
+
+⚠️ **Se NÃO detectar automaticamente como Next.js:**
+
+1. Clique em **"Override"** ou procure por "Framework Settings"
+2. Selecione manualmente: **Next.js**
+3. Ou deixe "Other" e configure manualmente (ver abaixo)
 
 #### **Root Directory**
+
 ⚠️ **IMPORTANTE**: Clique em "Edit" ao lado de Root Directory
+
 - Selecione: **`frontend`**
 - Ou digite: `frontend`
 
 #### **Build and Output Settings**
-Você pode deixar o padrão:
-- **Build Command**: `npm run build` (ou `cd frontend && npm run build`)
-- **Output Directory**: `.next` (ou `frontend/.next`)
-- **Install Command**: `npm install` (ou `cd frontend && npm install`)
 
-**ATENÇÃO**: Se você configurou Root Directory como `frontend`, os comandos acima devem ser SEM `cd frontend`.
+**Se detectou Next.js:**
+
+- Deixe tudo padrão
+
+**Se NÃO detectou (mostra "Other" ou vazio):**
+Configure manualmente:
+
+- **Build Command**: `cd frontend && npm run build`
+- **Output Directory**: `.next`
+- **Install Command**: `cd frontend && npm install`
+
+**OU se Root Directory = `frontend`:**
+
+- **Build Command**: `npm run build`
+- **Output Directory**: `.next`
+- **Install Command**: `npm install`
 
 ### 4️⃣ Adicionar Variáveis de Ambiente
 
@@ -49,13 +67,16 @@ Antes de fazer o deploy, clique em **"Environment Variables"**
 Adicione as seguintes variáveis:
 
 #### Variável 1:
+
 ```
 Key: NEXT_PUBLIC_API_URL
 Value: https://agenda-alcantara-production.up.railway.app
 ```
+
 ⚠️ **Importante**: Use a URL do seu backend no Railway (você vai obter essa URL depois)
 
 #### Variável 2:
+
 ```
 Key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
 Value: 348669216349-vusinhi22q9epgjqmdt6f59d4c07d5lu.apps.googleusercontent.com
@@ -84,6 +105,7 @@ Após o deploy completar:
 **Causa**: Root Directory não configurado corretamente
 
 **Solução**:
+
 1. Settings → General → Root Directory
 2. Certifique-se de que está `frontend`
 3. Save
@@ -94,16 +116,19 @@ Após o deploy completar:
 **Solução**: Ajuste os comandos de build:
 
 Se Root Directory = `frontend`:
+
 - Build: `npm run build`
 - Install: `npm install`
 
 Se Root Directory = `.`:
+
 - Build: `cd frontend && npm run build`
 - Install: `cd frontend && npm install`
 
 ### Erro: "Cannot find module"
 
 **Solução**:
+
 1. Limpe o cache: Settings → General → Clear Build Cache
 2. Delete `.next` e `node_modules` localmente
 3. Commit e push novamente
@@ -177,4 +202,3 @@ Depois de ter feito o deploy:
 ## 🆘 Precisa de Ajuda?
 
 Se travar em algum passo, me avise qual erro apareceu!
-
