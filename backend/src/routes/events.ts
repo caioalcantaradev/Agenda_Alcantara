@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { CalendarService } from "../utils/calendarService";
-import { authenticateToken } from "../middleware/auth";
+import { authenticateToken, AuthRequest } from "../middleware/auth";
 
 const router = Router();
 
@@ -8,7 +8,7 @@ const router = Router();
 router.use(authenticateToken);
 
 // Listar eventos
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req: AuthRequest, res: Response) => {
   try {
     const { startDate, endDate } = req.query;
 
@@ -32,7 +32,7 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 // Criar evento
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: AuthRequest, res: Response) => {
   try {
     const { summary, description, startDateTime, endDateTime } = req.body;
 
@@ -64,7 +64,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // Atualizar evento
-router.put("/:eventId", async (req: Request, res: Response) => {
+router.put("/:eventId", async (req: AuthRequest, res: Response) => {
   try {
     const { eventId } = req.params;
     const { summary, description, startDateTime, endDateTime } = req.body;
@@ -97,7 +97,7 @@ router.put("/:eventId", async (req: Request, res: Response) => {
 });
 
 // Deletar evento
-router.delete("/:eventId", async (req: Request, res: Response) => {
+router.delete("/:eventId", async (req: AuthRequest, res: Response) => {
   try {
     const { eventId } = req.params;
 

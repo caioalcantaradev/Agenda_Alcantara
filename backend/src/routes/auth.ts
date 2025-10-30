@@ -42,7 +42,9 @@ router.post("/google/callback", async (req: Request, res: Response) => {
     if (user) {
       // Atualizar tokens
       user.accessToken = tokens.access_token!;
-      user.refreshToken = tokens.refresh_token;
+      if (tokens.refresh_token) {
+        user.refreshToken = tokens.refresh_token;
+      }
       await user.save();
     } else {
       // Criar novo usuário
@@ -52,13 +54,13 @@ router.post("/google/callback", async (req: Request, res: Response) => {
         name: userInfo.name!,
         picture: userInfo.picture,
         accessToken: tokens.access_token!,
-        refreshToken: tokens.refresh_token,
+        refreshToken: tokens.refresh_token || undefined,
       });
       await user.save();
     }
 
     // Gerar JWT
-    const jwtToken = generateJWT(user._id.toString());
+    const jwtToken = generateJWT((user._id as any).toString());
 
     res.json({
       token: jwtToken,
