@@ -26,6 +26,23 @@ const BASE_URL = `https://www.googleapis.com/calendar/v3/calendars/${encodeURICo
   CALENDAR_ID
 )}`;
 
+function toRfc3339WithOffset(localDateTime: string): string {
+  // Converte "YYYY-MM-DDTHH:mm" para RFC3339 com timezone local: YYYY-MM-DDTHH:mm:ss±HH:MM
+  const d = new Date(localDateTime);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const year = d.getFullYear();
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hours = pad(d.getHours());
+  const minutes = pad(d.getMinutes());
+  const seconds = pad(d.getSeconds());
+  const tzOffsetMin = -d.getTimezoneOffset();
+  const sign = tzOffsetMin >= 0 ? "+" : "-";
+  const tzH = pad(Math.floor(Math.abs(tzOffsetMin) / 60));
+  const tzM = pad(Math.abs(tzOffsetMin) % 60);
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${sign}${tzH}:${tzM}`;
+}
+
 export const eventsService = {
   // Listar eventos
   async getEvents(startDate: string, endDate: string): Promise<Event[]> {
@@ -62,8 +79,8 @@ export const eventsService = {
     const body = {
       summary: eventData.summary,
       description: eventData.description,
-      start: { dateTime: eventData.startDateTime },
-      end: { dateTime: eventData.endDateTime },
+      start: { dateTime: toRfc3339WithOffset(eventData.startDateTime) },
+      end: { dateTime: toRfc3339WithOffset(eventData.endDateTime) },
     };
     const res = await fetch(`${BASE_URL}/events`, {
       method: "POST",
@@ -93,8 +110,8 @@ export const eventsService = {
     const body = {
       summary: eventData.summary,
       description: eventData.description,
-      start: { dateTime: eventData.startDateTime },
-      end: { dateTime: eventData.endDateTime },
+      start: { dateTime: toRfc3339WithOffset(eventData.startDateTime) },
+      end: { dateTime: toRfc3339WithOffset(eventData.endDateTime) },
     };
     const res = await fetch(`${BASE_URL}/events/${encodeURIComponent(eventId)}`, {
       method: "PUT",
