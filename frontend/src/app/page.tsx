@@ -54,7 +54,7 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                Família Alcantara
+                Agenda Alcantara
               </h1>
             </div>
 

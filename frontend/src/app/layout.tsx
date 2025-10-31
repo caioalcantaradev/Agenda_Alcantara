@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Família Alcantara",
+  title: "Agenda Alcantara",
   description: "Agenda compartilhada integrada com Google Calendar",
 };
 

@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Política de Privacidade | Família Alcantara",
+  title: "Política de Privacidade | Agenda Alcantara",
   description:
-    "Política de Privacidade do aplicativo Família Alcantara: como coletamos, usamos e protegemos seus dados ao integrar com o Google Calendar.",
+    "Política de Privacidade do aplicativo Agenda Alcantara: como coletamos, usamos e protegemos seus dados ao integrar com o Google Calendar.",
 };
 
 export default function PrivacyPage() {
@@ -20,7 +20,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold mb-2">Visão geral</h2>
             <p>
-              O aplicativo Família Alcantara é um projeto de agenda compartilhada que
+              O aplicativo Agenda Alcantara é um projeto de agenda compartilhada que
               integra diretamente com o Google Calendar. O aplicativo funciona 100%
               no navegador do usuário (sem backend próprio) e solicita permissão
               para ler e gerenciar eventos no calendário escolhido.
