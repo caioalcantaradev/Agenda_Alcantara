@@ -9,8 +9,8 @@ export default function LoginButton() {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const authUrl = await authService.getAuthUrl();
-      window.location.href = authUrl;
+      await authService.signIn();
+      window.location.href = "/";
     } catch (error) {
       console.error("Erro ao iniciar login:", error);
       alert("Erro ao iniciar login. Tente novamente.");

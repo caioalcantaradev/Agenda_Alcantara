@@ -25,10 +25,9 @@ export const useAuth = () => {
     checkAuth();
   }, []);
 
-  const login = async (code: string) => {
+  const login = async () => {
     try {
-      const { token, user: userData } = await authService.loginWithGoogle(code);
-      localStorage.setItem("token", token);
+      const userData = await authService.signIn();
       setUser(userData);
       return userData;
     } catch (error) {

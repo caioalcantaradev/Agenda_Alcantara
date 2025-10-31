@@ -1,209 +1,111 @@
-# Família Alcantara
+# Família Alcantara (Frontend Only)
 
-Um aplicativo web de agenda compartilhada integrado com Google Calendar, permitindo que você e sua esposa compartilhem compromissos em um único calendário.
+Aplicativo web de agenda compartilhada usando apenas frontend (Next.js) integrado diretamente ao Google Calendar. Você e sua esposa fazem login com suas contas Google e usam a mesma agenda compartilhada.
 
 ## 🚀 Tecnologias
 
-### Backend
-
-- **Node.js** + **Express** - API REST
-- **TypeScript** - Tipagem estática
-- **MongoDB** + **Mongoose** - Banco de dados
-- **Google APIs** - Integração com Google Calendar
-- **JWT** - Autenticação
-
-### Frontend
-
-- **Next.js 14** - Framework React
-- **TypeScript** - Tipagem estática
-- **TailwindCSS** - Estilização
-- **Axios** - Cliente HTTP
-- **date-fns** - Manipulação de datas
+- **Next.js 14** (React)
+- **TypeScript**
+- **TailwindCSS**
+- **date-fns**
+- **Google Identity Services** (OAuth 2.0 no navegador)
+- **Google Calendar API** (chamada direta do client)
 
 ## 📋 Pré-requisitos
 
-- Node.js (versão 18 ou superior)
-- MongoDB (local ou MongoDB Atlas)
+- Node.js (18 ou superior)
 - Conta Google com acesso ao Google Calendar
-- Google Cloud Console configurado
+- Projeto no Google Cloud com a Calendar API habilitada
 
-### 📥 Instalando MongoDB (Windows)
+## 🔧 Configuração do Google Cloud
 
-Se você não tem o MongoDB instalado:
+1) Crie/seleciona um projeto em `Google Cloud Console`
+2) Habilite a API: Google Calendar API
+3) Crie um OAuth 2.0 Client ID (Application type: Web application)
+   - Authorized JavaScript origins (exemplos):
+     - `http://localhost:3000`
+     - `https://seu-dominio.com`
+   - Não é necessário Redirect URI neste fluxo baseado em token do Google Identity Services
+4) Configure a OAuth consent screen e adicione os usuários de teste (você e sua esposa)
+5) Copie o Client ID
 
-1. **Download**: Baixe o MongoDB Community Server em [mongodb.com/download](https://www.mongodb.com/try/download/community)
-2. **Instalação**: Execute o instalador e siga as instruções
-3. **Verificar**: Abra o terminal e teste `mongod --version`
-4. **Alternativa**: Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (gratuito) e configure no `.env`
+## 📅 Agenda compartilhada no Google Calendar
 
-## 🛠️ Instalação
+Você pode:
+- Usar a agenda principal (`primary`) de cada usuário, ou
+- Criar uma agenda compartilhada específica e colocar o ID desta agenda no `.env`.
 
-### 1. Clone o repositório
+Passos para agenda compartilhada:
+1. Em `https://calendar.google.com`, crie uma nova agenda (ex.: "Família Alcantara")
+2. Compartilhe com os dois e-mails (permissão "Fazer alterações nos eventos")
+3. Copie o ID da agenda nas configurações da agenda
+
+## 🛠️ Instalação e execução (somente frontend)
+
+1) Clone o repositório
 
 ```bash
 git clone https://github.com/caioalcantaradev/Agenda_Alcantara.git
-cd Agenda_Alcantara
-```
-
-### 2. Configure o Backend
-
-```bash
-cd backend
+cd Agenda_Alcantara/frontend
 npm install
 ```
 
-Crie um arquivo `.env` na pasta `backend` baseado no `env.example`:
+2) Crie o arquivo `frontend/.env.local` (baseado em `env.local.example`)
 
 ```env
-# Google OAuth Configuration
-GOOGLE_CLIENT_ID=seu_google_client_id
-GOOGLE_CLIENT_SECRET=seu_google_client_secret
-GOOGLE_REDIRECT_URI=http://localhost:5000/api/auth/google/callback
-
-# Shared Calendar ID (criar um calendário compartilhado no Google Calendar)
-SHARED_CALENDAR_ID=id_do_calendario_compartilhado
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/agenda_alcantara
-
-# JWT Secret
-JWT_SECRET=sua_chave_secreta_jwt
-
-# Server Port
-PORT=5000
-```
-
-### 3. Configure o Frontend
-
-```bash
-cd ../frontend
-npm install
-```
-
-Crie um arquivo `.env.local` na pasta `frontend` baseado no `env.local.example`:
-
-```env
-# API Backend URL
-NEXT_PUBLIC_API_URL=http://localhost:5000
-
-# Google OAuth Client ID (mesmo do backend)
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=seu_google_client_id
+# Use "primary" ou o ID da agenda compartilhada
+NEXT_PUBLIC_GOOGLE_CALENDAR_ID=primary
 ```
 
-## 🔧 Configuração do Google Cloud Console
-
-### 1. Criar Projeto
-
-1. Acesse [Google Cloud Console](https://console.cloud.google.com/)
-2. Crie um novo projeto ou selecione um existente
-
-### 2. Habilitar APIs
-
-1. Vá para "APIs & Services" > "Library"
-2. Procure e habilite:
-   - Google Calendar API
-   - Google+ API (para informações do usuário)
-
-### 3. Configurar OAuth 2.0
-
-1. Vá para "APIs & Services" > "Credentials"
-2. Clique em "Create Credentials" > "OAuth 2.0 Client IDs"
-3. Configure:
-   - **Application type**: Web application
-   - **Name**: Família Alcantara
-   - **Authorized redirect URIs**: `http://localhost:5000/api/auth/google/callback`
-
-### 4. Configurar Tela de Consentimento
-
-1. Vá para "APIs & Services" > "OAuth consent screen"
-2. Configure as informações básicas
-3. Adicione os usuários de teste (você e sua esposa)
-
-## 📅 Configuração do Calendário Compartilhado
-
-### 1. Criar Calendário
-
-1. Acesse [Google Calendar](https://calendar.google.com/)
-2. Clique no "+" ao lado de "Outros calendários"
-3. Selecione "Criar novo calendário"
-4. Nome: "Família Alcantara"
-5. Clique em "Criar calendário"
-
-### 2. Compartilhar Calendário
-
-1. Vá para as configurações do calendário criado
-2. Clique em "Compartilhar com pessoas específicas"
-3. Adicione os emails de você e sua esposa
-4. Defina as permissões como "Fazer alterações nos eventos"
-5. Copie o ID do calendário (encontrado nas configurações)
-
-### 3. Configurar no Backend
-
-1. Cole o ID do calendário na variável `SHARED_CALENDAR_ID` do arquivo `.env`
-
-## 🚀 Executando o Projeto
-
-### 1. Iniciar o Backend
+3) Rode o app
 
 ```bash
-cd backend
 npm run dev
 ```
 
-O backend estará rodando em `http://localhost:5000`
+Abra `http://localhost:3000` no navegador.
 
-### 2. Iniciar o Frontend
+## 📱 Como usar
 
-```bash
-cd frontend
-npm run dev
-```
+1. Clique em "Entrar com Google" e autorize os escopos solicitados
+2. A agenda carregará os eventos do calendário configurado
+3. Crie, edite e exclua eventos diretamente do app
+4. Todos os eventos aparecerão para os usuários com acesso à agenda
 
-O frontend estará rodando em `http://localhost:3000`
+## 🔐 Escopos e segurança
 
-## 📱 Como Usar
+- O app usa Google Identity Services no navegador e solicita os escopos:
+  - `openid email profile`
+  - `https://www.googleapis.com/auth/calendar.events`
+- Os tokens ficam apenas no browser do usuário; não há backend ou banco de dados.
 
-1. **Login**: Acesse `http://localhost:3000` e clique em "Entrar com Google"
-2. **Autorização**: Autorize o acesso ao Google Calendar
-3. **Calendário**: Visualize o calendário mensal com os compromissos
-4. **Adicionar**: Clique em "Adicionar Compromisso" ou em uma data no calendário
-5. **Compartilhamento**: Todos os eventos aparecerão para ambos os usuários
+## 🚀 Deploy
 
-## 🔐 Segurança
-
-- Autenticação via Google OAuth 2.0
-- Tokens JWT para sessões
-- Validação de usuários autorizados
-- CORS configurado para o frontend
+- Em provedores como Vercel, configure as variáveis de ambiente do projeto:
+  - `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
+  - `NEXT_PUBLIC_GOOGLE_CALENDAR_ID`
+- Adicione o domínio de produção em "Authorized JavaScript origins" no Google Cloud.
 
 ## 📝 Funcionalidades
 
-- ✅ Login com Google OAuth
-- ✅ Calendário mensal, semanal e diário interativo
-- ✅ Criação, edição e exclusão de compromissos
-- ✅ Visualização detalhada de eventos
-- ✅ Interface responsiva
-- ✅ Modo escuro/claro
-- ✅ Destaque de feriados brasileiros
-- ✅ Detecção de conflitos de horários
-- ✅ Sincronização com Google Calendar
-- ✅ Compartilhamento entre usuários
+- ✅ Login com Google (sem backend)
+- ✅ Visualização mensal, semanal e diária
+- ✅ Criar, editar e excluir eventos
+- ✅ Modal de detalhes do evento
+- ✅ Modo claro/escuro
+- ✅ Feriados brasileiros destacados
+- ✅ Detecção de conflitos de horário
 
 ## 🐛 Solução de Problemas
 
-### Erro de CORS
-
-- Verifique se o `FRONTEND_URL` está configurado corretamente no backend
-
-### Erro de Autenticação
-
-- Verifique se as credenciais do Google OAuth estão corretas
-- Confirme se o redirect URI está configurado no Google Cloud Console
-
-### Erro de Calendário
-
-- Verifique se o `SHARED_CALENDAR_ID` está correto
-- Confirme se o calendário está compartilhado com os usuários
+- "A autenticação não abre/funciona":
+  - Verifique `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
+  - Confirme que o domínio está em Authorized JavaScript origins
+- "Eventos não carregam":
+  - Verifique se a Calendar API está habilitada
+  - Confirme `NEXT_PUBLIC_GOOGLE_CALENDAR_ID` (use `primary` ou o ID correto)
+  - Garanta que a agenda está compartilhada com a conta logada
 
 ## 📄 Licença
 

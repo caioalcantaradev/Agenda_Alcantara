@@ -1,22 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import LoginButton from "@/components/LoginButton";
 
 export default function LoginPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-    if (code) {
-      console.log("Código OAuth recebido, redirecionando...");
-      // Por enquanto apenas log, depois implementamos o callback
-      router.push("/");
-    }
-  }, [router]);
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="max-w-md w-full space-y-8 px-4">
