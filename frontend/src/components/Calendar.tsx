@@ -32,8 +32,8 @@ export default function Calendar({ onDateClick }: CalendarProps) {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   // Inclui dias de "folga" no início/fim para alinhar corretamente com Dom..Sáb
-  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 }); // Segunda
-  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 }); // Domingo
+  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
   const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
   const loadEvents = async () => {
@@ -149,7 +149,7 @@ export default function Calendar({ onDateClick }: CalendarProps) {
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((day) => (
+        {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day) => (
           <div
             key={day}
             className="p-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400"
