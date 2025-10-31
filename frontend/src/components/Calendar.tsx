@@ -5,6 +5,8 @@ import {
   format,
   startOfMonth,
   endOfMonth,
+  startOfWeek,
+  endOfWeek,
   eachDayOfInterval,
   isSameMonth,
   isSameDay,
@@ -29,7 +31,10 @@ export default function Calendar({ onDateClick }: CalendarProps) {
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
-  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  // Inclui dias de "folga" no início/fim para alinhar corretamente com Dom..Sáb
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 }); // Domingo
+  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
+  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
   const loadEvents = async () => {
     setLoading(true);
