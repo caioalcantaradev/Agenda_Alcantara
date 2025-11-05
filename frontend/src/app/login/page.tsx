@@ -39,11 +39,20 @@ function LoginForm() {
       }
       window.location.href = "/";
     } catch (err: any) {
-      if (err?.message) {
+      console.error("Erro no login:", err);
+      if (
+        err?.message &&
+        !err.message.includes("fetch") &&
+        !err.message.includes("Failed")
+      ) {
         setError(err.message);
-      } else if (err?.name === "TypeError" || err?.message?.includes("fetch")) {
+      } else if (
+        err?.name === "TypeError" ||
+        err?.message?.includes("fetch") ||
+        err?.message?.includes("Failed")
+      ) {
         setError(
-          "Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente."
+          "Não foi possível conectar ao servidor. Verifique se a URL da API está configurada corretamente."
         );
       } else {
         setError("Erro ao fazer login. Tente novamente.");
