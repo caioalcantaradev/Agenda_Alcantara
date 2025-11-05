@@ -67,13 +67,6 @@ export default function HomePage() {
               <ThemeToggle />
 
               <div className="hidden sm:flex items-center space-x-3">
-                {user?.picture && (
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full"
-                  />
-                )}
                 <span className="text-sm text-gray-700 dark:text-gray-300">
                   {user?.name}
                 </span>
