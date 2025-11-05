@@ -17,12 +17,42 @@ function LoginForm() {
 
     const url = `${API_URL}/api/auth/login`;
     console.log("🔗 Tentando login em:", url);
+    console.log("🌐 API_URL configurada:", API_URL);
+    console.log("📧 Email:", email);
 
+    // Primeiro, testa se o backend está acessível
+    try {
+      const healthUrl = `${API_URL}/api/health`;
+      console.log("🏥 Testando health check:", healthUrl);
+      const healthRes = await fetch(healthUrl, {
+        method: "GET",
+        signal: AbortSignal.timeout(5000), // Timeout de 5 segundos
+      });
+
+      if (!healthRes.ok) {
+        throw new Error(`Backend retornou status ${healthRes.status}`);
+      }
+
+      const healthData = await healthRes.json();
+      console.log("✅ Health check OK:", healthData);
+    } catch (healthErr: any) {
+      console.error("❌ Health check falhou:", healthErr);
+      setError(
+        `Não foi possível conectar ao servidor. Verifique se o backend está rodando.\n\nURL tentada: ${API_URL}\n\nErro: ${
+          healthErr.message || "Timeout ou conexão recusada"
+        }`
+      );
+      setLoading(false);
+      return;
+    }
+
+    // Se o health check passou, tenta fazer login
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        signal: AbortSignal.timeout(10000), // Timeout de 10 segundos
       });
 
       console.log("📡 Resposta do servidor:", res.status, res.statusText);
@@ -59,18 +89,31 @@ function LoginForm() {
       console.error("❌ Erro no login:", err);
       console.error("URL usada:", url);
       console.error("API_URL:", API_URL);
+      console.error("Tipo do erro:", err?.name);
+      console.error("Mensagem do erro:", err?.message);
+
+      // Tratamento de timeout
+      if (err?.name === "AbortError" || err?.message?.includes("timeout")) {
+        setError(
+          `Timeout: O servidor demorou muito para responder. Verifique se a URL está correta e se o backend está rodando.\n\nURL: ${API_URL}`
+        );
+        return;
+      }
 
       if (err?.message && typeof err.message === "string") {
         // Se já tem uma mensagem de erro em português, usa ela
         if (
           !err.message.includes("fetch") &&
           !err.message.includes("Failed") &&
-          !err.message.includes("NetworkError")
+          !err.message.includes("NetworkError") &&
+          !err.message.includes("Failed to fetch")
         ) {
           setError(err.message);
         } else {
           setError(
-            `Não foi possível conectar ao servidor. Verifique se a URL da API está configurada corretamente. (URL: ${API_URL})`
+            `Erro de conexão: Não foi possível conectar ao servidor.\n\nURL configurada: ${
+              API_URL || "não configurada"
+            }\n\nVerifique:\n1. Se o backend está rodando no Railway\n2. Se a variável NEXT_PUBLIC_API_URL está configurada na Vercel\n3. Se a URL está correta (sem barra final)`
           );
         }
       } else if (
@@ -80,12 +123,12 @@ function LoginForm() {
         err?.message?.includes("NetworkError")
       ) {
         setError(
-          `Não foi possível conectar ao servidor. Verifique se a URL da API está configurada corretamente na Vercel. (URL atual: ${
+          `Erro de rede: Não foi possível conectar ao servidor.\n\nURL: ${
             API_URL || "não configurada"
-          })`
+          }\n\nPossíveis causas:\n- Backend não está rodando\n- URL incorreta na Vercel\n- Problema de CORS\n- Firewall bloqueando a conexão`
         );
       } else {
-        setError("Erro ao fazer login. Tente novamente.");
+        setError(`Erro ao fazer login: ${err?.message || "Erro desconhecido"}`);
       }
     } finally {
       setLoading(false);
