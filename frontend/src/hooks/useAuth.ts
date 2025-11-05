@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { API_URL } from "@/lib/api-client";
 
 export type User = {
   id: string;
@@ -14,7 +13,8 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
     if (!token) {
       setLoading(false);
       return;
@@ -45,7 +45,8 @@ export const useAuth = () => {
     });
     if (!res.ok) throw new Error("Credenciais inválidas");
     const data = await res.json();
-    if (typeof window !== "undefined") localStorage.setItem("ga_token", data.token);
+    if (typeof window !== "undefined")
+      localStorage.setItem("ga_token", data.token);
     setUser(data.user);
     return data.user;
   };
@@ -68,4 +69,3 @@ export const useAuth = () => {
     isAuthenticated: !!user,
   };
 };
-

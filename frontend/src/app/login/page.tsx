@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { API_URL } from "@/lib/api-client";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -15,21 +14,39 @@ function LoginForm() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    const url = `${API_URL}/api/auth/login`;
+    console.log("🔗 Tentando login em:", url);
+
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("📡 Resposta do servidor:", res.status, res.statusText);
+
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
+        let errorData: any = {};
+        try {
+          errorData = await res.json();
+        } catch {
+          // Se não conseguir parsear JSON, usa mensagem padrão
+        }
+
         if (res.status === 401) {
           throw new Error("Email ou senha incorretos");
         } else if (res.status === 400) {
           throw new Error(errorData.message || "Preencha todos os campos");
+        } else if (res.status === 0 || res.status >= 500) {
+          throw new Error(
+            "Servidor indisponível. Tente novamente em alguns instantes."
+          );
         } else {
-          throw new Error("Erro ao fazer login. Tente novamente.");
+          throw new Error(
+            errorData.message || "Erro ao fazer login. Tente novamente."
+          );
         }
       }
 
@@ -39,20 +56,33 @@ function LoginForm() {
       }
       window.location.href = "/";
     } catch (err: any) {
-      console.error("Erro no login:", err);
-      if (
-        err?.message &&
-        !err.message.includes("fetch") &&
-        !err.message.includes("Failed")
-      ) {
-        setError(err.message);
+      console.error("❌ Erro no login:", err);
+      console.error("URL usada:", url);
+      console.error("API_URL:", API_URL);
+
+      if (err?.message && typeof err.message === "string") {
+        // Se já tem uma mensagem de erro em português, usa ela
+        if (
+          !err.message.includes("fetch") &&
+          !err.message.includes("Failed") &&
+          !err.message.includes("NetworkError")
+        ) {
+          setError(err.message);
+        } else {
+          setError(
+            `Não foi possível conectar ao servidor. Verifique se a URL da API está configurada corretamente. (URL: ${API_URL})`
+          );
+        }
       } else if (
         err?.name === "TypeError" ||
         err?.message?.includes("fetch") ||
-        err?.message?.includes("Failed")
+        err?.message?.includes("Failed") ||
+        err?.message?.includes("NetworkError")
       ) {
         setError(
-          "Não foi possível conectar ao servidor. Verifique se a URL da API está configurada corretamente."
+          `Não foi possível conectar ao servidor. Verifique se a URL da API está configurada corretamente na Vercel. (URL atual: ${
+            API_URL || "não configurada"
+          })`
         );
       } else {
         setError("Erro ao fazer login. Tente novamente.");

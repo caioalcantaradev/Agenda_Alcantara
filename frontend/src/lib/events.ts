@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { API_URL } from "./api-client";
 
 export interface Event {
   id: string;
@@ -44,9 +44,12 @@ export const eventsService = {
   // Listar eventos
   async getEvents(startDate: string, endDate: string): Promise<Event[]> {
     // Chamará o backend na próxima etapa; por ora retorna vazio para evitar dependência do Google
-    const url = `${BASE_URL}/events?start=${encodeURIComponent(startDate)}&end=${encodeURIComponent(endDate)}`;
+    const url = `${BASE_URL}/events?start=${encodeURIComponent(
+      startDate
+    )}&end=${encodeURIComponent(endDate)}`;
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
       const res = await fetch(url, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -60,7 +63,8 @@ export const eventsService = {
 
   // Criar evento
   async createEvent(eventData: CreateEventData): Promise<Event> {
-    const token = typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
     const body = {
       summary: eventData.summary,
       description: eventData.description,
@@ -84,33 +88,40 @@ export const eventsService = {
     eventId: string,
     eventData: CreateEventData
   ): Promise<Event> {
-    const token = typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
     const body = {
       summary: eventData.summary,
       description: eventData.description,
       startDateTime: toRfc3339WithOffset(eventData.startDateTime),
       endDateTime: toRfc3339WithOffset(eventData.endDateTime),
     };
-    const res = await fetch(`${BASE_URL}/events/${encodeURIComponent(eventId)}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify(body),
-    });
+    const res = await fetch(
+      `${BASE_URL}/events/${encodeURIComponent(eventId)}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(body),
+      }
+    );
     if (!res.ok) throw new Error("Falha ao atualizar evento");
     return await res.json();
   },
 
   // Deletar evento
   async deleteEvent(eventId: string): Promise<void> {
-    const token = typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
-    const res = await fetch(`${BASE_URL}/events/${encodeURIComponent(eventId)}`, {
-      method: "DELETE",
-      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-    });
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
+    const res = await fetch(
+      `${BASE_URL}/events/${encodeURIComponent(eventId)}`,
+      {
+        method: "DELETE",
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      }
+    );
     if (!res.ok) throw new Error("Falha ao deletar evento");
   },
 };
-
