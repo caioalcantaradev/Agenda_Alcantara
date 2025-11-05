@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Calendar from "@/components/Calendar";
@@ -18,6 +18,18 @@ export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewType, setViewType] = useState<ViewType>("month");
 
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [loading, isAuthenticated, router]);
+
+  useEffect(() => {
+    if (!loading && isAuthenticated && user?.mustChangePassword) {
+      router.push("/alterar-senha");
+    }
+  }, [loading, isAuthenticated, user?.mustChangePassword, router]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -26,13 +38,7 @@ export default function HomePage() {
     );
   }
 
-  if (!isAuthenticated) {
-    router.push("/login");
-    return null;
-  }
-
-  if (user?.mustChangePassword) {
-    router.push("/alterar-senha");
+  if (!isAuthenticated || user?.mustChangePassword) {
     return null;
   }
 
