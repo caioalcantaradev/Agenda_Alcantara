@@ -8,15 +8,29 @@ import { requireAuth } from "../middlewares/auth.js";
 export const authRouter = Router();
 
 authRouter.post("/login", async (req, res) => {
+  console.log("🔐 Tentativa de login recebida");
   const { email, password } = req.body as { email?: string; password?: string };
-  if (!email || !password)
+
+  if (!email || !password) {
+    console.log("❌ Login falhou: email ou senha ausentes");
     return res.status(400).json({ message: "Email e senha são obrigatórios" });
+  }
 
+  console.log(`🔍 Buscando usuário: ${email.toLowerCase()}`);
   const user = await User.findOne({ email: email.toLowerCase() });
-  if (!user) return res.status(401).json({ message: "Credenciais inválidas" });
+  if (!user) {
+    console.log("❌ Login falhou: usuário não encontrado");
+    return res.status(401).json({ message: "Email ou senha incorretos" });
+  }
 
+  console.log(`✅ Usuário encontrado: ${user.name}`);
   const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) return res.status(401).json({ message: "Credenciais inválidas" });
+  if (!ok) {
+    console.log("❌ Login falhou: senha incorreta");
+    return res.status(401).json({ message: "Email ou senha incorretos" });
+  }
+
+  console.log(`✅ Login bem-sucedido para: ${user.email}`);
 
   const token = jwt.sign(
     { id: user.id, email: user.email, name: user.name },

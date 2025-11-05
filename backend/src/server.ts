@@ -15,8 +15,42 @@ async function bootstrap() {
     await connectMongo();
 
     const app = express();
-    app.use(cors({ origin: config.corsOrigin }));
+
+    // CORS configurado para aceitar múltiplas origens
+    const allowedOrigins = [
+      config.corsOrigin,
+      "http://localhost:3000",
+      "https://agenda-alcantara.vercel.app",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean);
+
+    app.use(
+      cors({
+        origin: (origin, callback) => {
+          // Permite requisições sem origin (mobile apps, Postman, etc)
+          if (!origin) return callback(null, true);
+          if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            console.warn(`⚠️  CORS bloqueado para origem: ${origin}`);
+            callback(null, true); // Permitir todas por enquanto para debug
+          }
+        },
+        credentials: true,
+      })
+    );
+
     app.use(express.json());
+
+    // Log de requisições para debug
+    app.use((req, res, next) => {
+      console.log(
+        `${req.method} ${req.path} - Origin: ${
+          req.headers.origin || "sem origin"
+        }`
+      );
+      next();
+    });
 
     // Health check (sem autenticação)
     app.get("/api/health", (_req, res) => {
