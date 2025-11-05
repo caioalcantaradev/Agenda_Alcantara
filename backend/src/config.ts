@@ -7,8 +7,11 @@ dotenv.config();
 const DEFAULT_MONGODB_URI =
   "mongodb+srv://caioalcantaradev_db_user:Cvv2BdcvOWvNPJEM@agenda-alcantara.dxxyho2.mongodb.net/?appName=Agenda-Alcantara";
 
+// Porta: Railway fornece via PORT, se não tiver, usa 5000
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
+
 export const config = {
-  port: process.env.PORT ? Number(process.env.PORT) : 5000,
+  port,
   mongoUri: process.env.MONGODB_URI || DEFAULT_MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET || "change-me",
   corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",

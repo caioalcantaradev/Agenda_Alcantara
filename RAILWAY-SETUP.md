@@ -23,7 +23,7 @@ No mesmo painel de Settings, vá em **Variables** e configure:
 MONGODB_URI=mongodb+srv://caioalcantaradev_db_user:Cvv2BdcvOWvNPJEM@agenda-alcantara.dxxyho2.mongodb.net/?appName=Agenda-Alcantara
 JWT_SECRET=seu-segredo-jwt-aqui
 PORT=5000
-CORS_ORIGIN=https://seu-frontend.vercel.app
+CORS_ORIGIN=https://agenda-alcantara.vercel.app/
 ```
 
 ### 3. Verificar Deploy
