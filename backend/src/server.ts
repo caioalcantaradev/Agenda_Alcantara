@@ -71,21 +71,9 @@ async function bootstrap() {
       });
     });
 
+    // Registrar rotas
     app.use("/api/auth", authRouter);
     app.use("/api/events", eventsRouter);
-
-    // Rota catch-all para métodos não permitidos
-    app.all("/api/auth/login", (req, res) => {
-      if (req.method !== "POST") {
-        console.error(
-          `❌ Método ${req.method} não permitido em /api/auth/login`
-        );
-        return res.status(405).json({
-          message: `Método ${req.method} não permitido. Use POST.`,
-          allowedMethods: ["POST"],
-        });
-      }
-    });
 
     // Tratamento de erros global
     app.use(
