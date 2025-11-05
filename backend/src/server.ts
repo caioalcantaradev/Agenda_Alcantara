@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import { connectMongo } from "./db.js";
 import { authRouter } from "./routes/auth.js";
 import { eventsRouter } from "./routes/events.js";
+import { seedUsersIfNeeded } from "./seed-auto.js";
 
 async function bootstrap() {
   try {
@@ -13,6 +14,9 @@ async function bootstrap() {
 
     // Conectar ao MongoDB
     await connectMongo();
+
+    // Executar seed automático se necessário
+    await seedUsersIfNeeded();
 
     const app = express();
 
