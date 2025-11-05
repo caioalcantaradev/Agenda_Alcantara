@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import { connectMongo } from "./db";
-import { User } from "./models/User";
+import { connectMongo } from "./db.js";
+import { User } from "./models/User.js";
 
 async function run() {
   await connectMongo();

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { config } from "./config";
+import { config } from "./config.js";
 
 export async function connectMongo(): Promise<void> {
   try {
@@ -8,7 +8,7 @@ export async function connectMongo(): Promise<void> {
     }
 
     console.log("🔌 Tentando conectar ao MongoDB...");
-    
+
     await mongoose.connect(config.mongoUri, {
       dbName: "agenda",
       serverSelectionTimeoutMS: 10000, // 10 segundos
@@ -29,11 +29,9 @@ export async function connectMongo(): Promise<void> {
     mongoose.connection.on("reconnected", () => {
       console.log("✅ MongoDB reconectado");
     });
-
   } catch (error: any) {
     console.error("❌ Erro ao conectar ao MongoDB:", error.message);
     console.error("Detalhes:", error);
     throw error;
   }
 }
-

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { requireAuth } from "../middlewares/auth";
-import { Event } from "../models/Event";
+import { requireAuth } from "../middlewares/auth.js";
+import { Event } from "../models/Event.js";
 
 export const eventsRouter = Router();
 

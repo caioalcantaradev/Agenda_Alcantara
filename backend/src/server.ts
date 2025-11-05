@@ -1,16 +1,16 @@
 import express from "express";
 import cors from "cors";
-import { config } from "./config";
-import { connectMongo } from "./db";
-import { authRouter } from "./routes/auth";
-import { eventsRouter } from "./routes/events";
+import { config } from "./config.js";
+import { connectMongo } from "./db.js";
+import { authRouter } from "./routes/auth.js";
+import { eventsRouter } from "./routes/events.js";
 
 async function bootstrap() {
   try {
     console.log("🚀 Iniciando servidor...");
     console.log(`📡 Porta: ${config.port}`);
     console.log(`🔗 CORS Origin: ${config.corsOrigin}`);
-    
+
     // Conectar ao MongoDB
     await connectMongo();
 
@@ -27,10 +27,17 @@ async function bootstrap() {
     app.use("/api/events", eventsRouter);
 
     // Tratamento de erros global
-    app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-      console.error("❌ Erro não tratado:", err);
-      res.status(500).json({ message: "Erro interno do servidor" });
-    });
+    app.use(
+      (
+        err: any,
+        _req: express.Request,
+        res: express.Response,
+        _next: express.NextFunction
+      ) => {
+        console.error("❌ Erro não tratado:", err);
+        res.status(500).json({ message: "Erro interno do servidor" });
+      }
+    );
 
     // Iniciar servidor
     const server = app.listen(config.port, "0.0.0.0", () => {
@@ -64,7 +71,6 @@ async function bootstrap() {
         process.exit(0);
       });
     });
-
   } catch (error) {
     console.error("❌ Falha ao iniciar servidor:", error);
     process.exit(1);
@@ -72,4 +78,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-

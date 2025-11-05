@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { config } from "../config";
+import { config } from "../config.js";
 
 export type AuthUser = {
   id: string;
