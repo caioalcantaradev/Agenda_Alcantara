@@ -49,6 +49,12 @@ async function bootstrap() {
           req.headers.origin || "sem origin"
         }`
       );
+      // Log adicional para debug de rotas
+      if (req.path.includes("/auth/login")) {
+        console.log(
+          `🔍 Login route hit - Method: ${req.method}, Path: ${req.path}`
+        );
+      }
       next();
     });
 
@@ -57,8 +63,29 @@ async function bootstrap() {
       res.json({ ok: true, timestamp: new Date().toISOString() });
     });
 
+    // Rota de teste para verificar se o servidor está funcionando
+    app.get("/api/test", (_req, res) => {
+      res.json({
+        message: "API está funcionando!",
+        routes: ["/api/auth/login", "/api/auth/me", "/api/events"],
+      });
+    });
+
     app.use("/api/auth", authRouter);
     app.use("/api/events", eventsRouter);
+
+    // Rota catch-all para métodos não permitidos
+    app.all("/api/auth/login", (req, res) => {
+      if (req.method !== "POST") {
+        console.error(
+          `❌ Método ${req.method} não permitido em /api/auth/login`
+        );
+        return res.status(405).json({
+          message: `Método ${req.method} não permitido. Use POST.`,
+          allowedMethods: ["POST"],
+        });
+      }
+    });
 
     // Tratamento de erros global
     app.use(
