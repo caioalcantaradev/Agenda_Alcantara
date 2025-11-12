@@ -1,16 +1,16 @@
-# Família Alcantara (Frontend + Backend)
+# Família Alcantara
 
-Aplicativo web de agenda compartilhada com login local (email/senha) para dois usuários e backend Node.js/Express com MongoDB Atlas. O frontend (Next.js) consome a API para autenticação via JWT e CRUD de eventos.
+Aplicativo web de agenda compartilhada com login local (email/senha) para dois usuários. Frontend e backend rodam na Vercel usando Next.js API Routes (Serverless Functions) com MongoDB Atlas.
 
 ## 🚀 Tecnologias
 
-- **Next.js 14** (React)
+- **Next.js 14** (React + API Routes)
 - **TypeScript**
 - **TailwindCSS**
 - **date-fns**
-- **Express** (API REST)
 - **MongoDB/Mongoose**
 - **JWT** (autenticação)
+- **Vercel** (deploy)
 
 ## 📋 Pré-requisitos
 
@@ -32,55 +32,7 @@ Aplicativo web de agenda compartilhada com login local (email/senha) para dois u
    - Copie a connection string (formato: `mongodb+srv://usuario:senha@cluster.mongodb.net/`)
    - Adicione o nome do banco no final: `mongodb+srv://usuario:senha@cluster.mongodb.net/agenda`
 
-### 2. Backend
-
-```bash
-cd backend
-npm install
-```
-
-Crie o arquivo `.env` baseado no `env.example`:
-
-```bash
-cp env.example .env
-```
-
-Edite o arquivo `.env` com suas credenciais:
-
-```env
-MONGODB_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/agenda
-JWT_SECRET=seu-secret-jwt-aqui
-PORT=5000
-CORS_ORIGIN=http://localhost:3000
-```
-
-**Importante**: Substitua `usuario:senha` pelos dados do usuário criado no MongoDB Atlas e `cluster.mongodb.net` pelo endereço do seu cluster.
-
-Opcional: execute o seed para criar os 2 usuários iniciais (edite emails/senhas em `src/seed.ts` se desejar):
-
-```bash
-npm run seed
-```
-
-Teste a conexão com o MongoDB:
-
-```bash
-npm run test:connection
-```
-
-Valide a configuração:
-
-```bash
-npm run validate:config
-```
-
-Inicie o backend:
-
-```bash
-npm run dev
-```
-
-2. Frontend
+### 2. Frontend
 
 ```bash
 cd frontend
@@ -90,8 +42,11 @@ npm install
 Crie `frontend/.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
+MONGODB_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/agenda
+JWT_SECRET=seu-secret-jwt-aqui
 ```
+
+**Importante**: Substitua `usuario:senha` pelos dados do usuário criado no MongoDB Atlas e `cluster.mongodb.net` pelo endereço do seu cluster.
 
 Execute o frontend:
 
@@ -113,10 +68,7 @@ cd Agenda_Alcantara/frontend
 npm install
 ```
 
-Pastas principais:
-
-- `frontend/` (Next.js)
-- `backend/` (Express/Mongoose)
+2. Configure o `.env.local` (veja passo 2 acima)
 
 3. Rode o app
 
@@ -125,6 +77,14 @@ npm run dev
 ```
 
 Abra `http://localhost:3000` no navegador.
+
+## 📁 Estrutura do Projeto
+
+- `frontend/` - Next.js app com API Routes (Serverless Functions)
+  - `src/app/api/` - API Routes (backend)
+  - `src/app/` - Páginas do frontend
+  - `src/lib/` - Utilitários (db, auth, config)
+  - `src/models/` - Modelos MongoDB (User, Event)
 
 ## 📱 Como usar
 
@@ -138,39 +98,33 @@ Abra `http://localhost:3000` no navegador.
 - Hash de senha com bcrypt
 - CORS restrito ao domínio do frontend
 
-## 🚀 Deploy
+## 🚀 Deploy na Vercel
+
+**IMPORTANTE**: Este projeto está configurado para rodar **tudo na Vercel** (frontend + backend via API Routes).
 
 ### Configurar MongoDB Atlas
-
-**IMPORTANTE**: Você precisa configurar o MongoDB Atlas antes de fazer o deploy. O MongoDB do Railway pausou após o período gratuito.
 
 Siga o guia completo em [MONGODB-ATLAS-SETUP.md](./MONGODB-ATLAS-SETUP.md) para:
 
 - Criar conta no MongoDB Atlas (gratuito)
 - Configurar cluster e acesso
 - Obter connection string
-- Configurar no deploy
+- Configurar Network Access para `0.0.0.0/0`
 
-### Backend
+### Deploy na Vercel
 
-O backend pode ser deployado em qualquer plataforma que suporte Node.js:
+Siga o guia completo em [VERCEL-SETUP.md](./VERCEL-SETUP.md) para:
 
-- **Render**: Configure a variável `MONGODB_URI` nas variáveis de ambiente
-- **Railway**: Configure a variável `MONGODB_URI` nas variáveis de ambiente (veja [RAILWAY-SETUP.md](./RAILWAY-SETUP.md))
-- **Vercel/Netlify**: Configure as variáveis de ambiente no painel
-- **Servidor próprio**: Configure o `.env` no servidor
+- Configurar variáveis de ambiente na Vercel
+- Fazer deploy do projeto
+- Verificar se está funcionando
 
-**Variáveis de ambiente necessárias no deploy:**
+**Variáveis de ambiente necessárias na Vercel:**
 
 - `MONGODB_URI`: Connection string do MongoDB Atlas (obrigatório)
 - `JWT_SECRET`: Secret para JWT (use uma string aleatória e segura)
-- `PORT`: Porta do servidor (geralmente fornecido pela plataforma)
-- `CORS_ORIGIN`: URL do frontend (ex: `https://seu-app.vercel.app`)
 
-### Frontend
-
-- **Vercel/Netlify**: Configure `NEXT_PUBLIC_API_URL` apontando para o backend
-- Configure também no `.env.local` a URL do backend em produção
+**Nota**: O frontend e o backend rodam no mesmo projeto na Vercel. As API Routes são Serverless Functions que se conectam ao MongoDB Atlas.
 
 ## 📝 Funcionalidades
 
@@ -186,8 +140,9 @@ O backend pode ser deployado em qualquer plataforma que suporte Node.js:
 
 ### Erro: "MONGODB_URI não está definido"
 
-- Verifique se o arquivo `.env` existe no diretório `backend`
+- Verifique se o arquivo `.env.local` existe no diretório `frontend`
 - Verifique se a variável `MONGODB_URI` está configurada corretamente
+- Verifique se a variável está configurada na Vercel (para deploy)
 
 ### Erro: "Authentication failed" ou "Network access denied"
 
@@ -197,14 +152,15 @@ O backend pode ser deployado em qualquer plataforma que suporte Node.js:
 
 ### Erro: "Failed to fetch" no frontend
 
-- Verifique se `NEXT_PUBLIC_API_URL` está configurada corretamente
-- Verifique se o backend está rodando
-- Verifique se o CORS está configurado corretamente
+- Verifique se as API Routes estão funcionando: `/api/health`
+- Verifique os logs da Vercel para identificar o erro
+- Verifique se o MongoDB está acessível
 
 ### Erro: "Email ou senha incorretos"
 
-- Execute o seed: `npm run seed` no backend
-- Verifique se os usuários foram criados corretamente
+- O seed automático é executado no primeiro login
+- Verifique se o MongoDB está conectado corretamente
+- Verifique se os usuários foram criados no MongoDB Atlas
 
 ## 📄 Licença
 

@@ -1,32 +1,36 @@
 import mongoose from "mongoose";
-import { config } from "./config.js";
+import { config } from "./config";
 
-export async function connectMongo(): Promise<void> {
+// Cache da conexão para reutilização em Serverless Functions
+let cachedConnection: typeof mongoose | null = null;
+
+export async function connectMongo(): Promise<typeof mongoose> {
+  // Se já existe conexão e está conectada, reutiliza
+  if (cachedConnection && mongoose.connection.readyState === 1) {
+    return cachedConnection;
+  }
+
   try {
     if (!config.mongoUri) {
       throw new Error("MONGODB_URI não está definido");
     }
 
-    console.log("🔌 Tentando conectar ao MongoDB...");
-    console.log(`📡 URI: ${config.mongoUri.replace(/\/\/.*@/, "//***:***@")}`); // Oculta credenciais no log
-
-    // Opções de conexão otimizadas para MongoDB Atlas
+    // Opções de conexão otimizadas para MongoDB Atlas e Vercel Serverless
     const options: mongoose.ConnectOptions = {
       dbName: "agenda",
-      serverSelectionTimeoutMS: 30000, // 30 segundos para selecionar servidor (aumentado para problemas de DNS)
-      socketTimeoutMS: 45000, // 45 segundos para operações
-      connectTimeoutMS: 30000, // 30 segundos para estabelecer conexão (aumentado para problemas de DNS)
-      maxPoolSize: 10, // Máximo de conexões no pool
-      minPoolSize: 1, // Mínimo de conexões no pool
-      retryWrites: true, // Retry automático de writes
-      w: "majority", // Write concern: espera confirmação da maioria
+      serverSelectionTimeoutMS: 30000, // 30 segundos
+      socketTimeoutMS: 45000, // 45 segundos
+      connectTimeoutMS: 30000, // 30 segundos
+      maxPoolSize: 1, // Serverless Functions: pool menor
+      minPoolSize: 1,
+      retryWrites: true,
+      w: "majority",
     };
 
-    await mongoose.connect(config.mongoUri, options);
+    // Conecta ao MongoDB
+    cachedConnection = await mongoose.connect(config.mongoUri, options);
 
     console.log("✅ Conectado ao MongoDB Atlas");
-    console.log(`📊 Database: ${mongoose.connection.db?.databaseName}`);
-    console.log(`🔗 Host: ${mongoose.connection.host}`);
 
     // Tratamento de eventos de conexão
     mongoose.connection.on("error", (err) => {
@@ -35,16 +39,14 @@ export async function connectMongo(): Promise<void> {
 
     mongoose.connection.on("disconnected", () => {
       console.warn("⚠️  MongoDB desconectado");
+      cachedConnection = null;
     });
 
     mongoose.connection.on("reconnected", () => {
       console.log("✅ MongoDB reconectado");
     });
 
-    // Evento quando a conexão é estabelecida
-    mongoose.connection.once("open", () => {
-      console.log("🚀 Conexão MongoDB estabelecida com sucesso");
-    });
+    return cachedConnection;
   } catch (error: any) {
     console.error("❌ Erro ao conectar ao MongoDB:", error.message);
 
@@ -69,18 +71,6 @@ export async function connectMongo(): Promise<void> {
       );
     }
 
-    console.error("Detalhes:", error);
-    throw error;
-  }
-}
-
-// Função para desconectar graciosamente
-export async function disconnectMongo(): Promise<void> {
-  try {
-    await mongoose.disconnect();
-    console.log("👋 Desconectado do MongoDB");
-  } catch (error: any) {
-    console.error("❌ Erro ao desconectar do MongoDB:", error.message);
     throw error;
   }
 }

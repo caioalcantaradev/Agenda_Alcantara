@@ -1,5 +1,71 @@
 # Changelog
 
+## [2024-11-12] - Migração para Vercel (API Routes)
+
+### ✅ Mudanças Realizadas
+
+#### Migração para Vercel
+
+- Backend migrado para API Routes do Next.js (Serverless Functions)
+- Frontend e backend agora rodam na mesma aplicação Next.js
+- Removida dependência de servidor Express separado
+- Tudo configurado para rodar na Vercel
+
+#### Estrutura do Projeto
+
+- API Routes criadas em `frontend/src/app/api/`
+- Modelos MongoDB movidos para `frontend/src/models/`
+- Lógica de conexão MongoDB em `frontend/src/lib/db.ts`
+- Autenticação JWT em `frontend/src/lib/auth.ts`
+- Seed automático executado no primeiro login
+
+#### Configuração
+
+- Variáveis de ambiente: `MONGODB_URI` e `JWT_SECRET`
+- Removida necessidade de `NEXT_PUBLIC_API_URL` (usa rotas relativas)
+- Removida necessidade de `CORS_ORIGIN` (mesmo domínio)
+- Removida necessidade de `PORT` (gerenciado pela Vercel)
+
+#### Documentação
+
+- `VERCEL-SETUP.md` - Guia completo de deploy na Vercel
+- `README.md` - Atualizado para refletir nova estrutura
+- Removidas referências ao Railway e Render
+- Atualizado `MONGODB-ATLAS-SETUP.md` para Vercel
+
+### 🗑️ Arquivos Removidos
+
+- `backend/` - Backend Express removido (não é mais necessário)
+- `RAILWAY-SETUP.md` - Guia do Railway removido
+- `railway.json` - Configuração do Railway removida
+- `render.yaml` - Configuração do Render removida
+- `CHECKLIST-DEPLOY.md` - Checklist antigo removido
+- `CONFIGURACAO-DEPLOY.md` - Configuração antiga removida
+
+### 📝 Arquivos Mantidos
+
+- `README.md` - Documentação principal atualizada
+- `MONGODB-ATLAS-SETUP.md` - Guia do MongoDB Atlas atualizado
+- `VERCEL-SETUP.md` - Guia de deploy na Vercel
+- `CHANGELOG.md` - Este arquivo
+
+### 🔧 Configuração Necessária
+
+- Arquivo `.env.local` no diretório `frontend` com `MONGODB_URI` e `JWT_SECRET`
+- MongoDB Atlas configurado com cluster ativo
+- Network Access configurado no MongoDB Atlas (0.0.0.0/0)
+- Variáveis de ambiente configuradas na Vercel para deploy
+
+### 🚀 Próximos Passos
+
+1. Configurar MongoDB Atlas (se ainda não feito)
+2. Configurar variáveis de ambiente no `.env.local` (desenvolvimento)
+3. Configurar variáveis de ambiente na Vercel (produção)
+4. Fazer deploy na Vercel
+5. Testar a aplicação
+
+---
+
 ## [2024-11-12] - Configuração MongoDB Atlas e Limpeza do Projeto
 
 ### ✅ Mudanças Realizadas

@@ -15,14 +15,13 @@ function LoginForm() {
     setError("");
     setLoading(true);
 
-    const url = `${API_URL}/api/auth/login`;
+    const url = `${API_URL}/auth/login`;
     console.log("🔗 Tentando login em:", url);
-    console.log("🌐 API_URL configurada:", API_URL);
     console.log("📧 Email:", email);
 
     // Primeiro, testa se o backend está acessível
+    const healthUrl = `${API_URL}/health`;
     try {
-      const healthUrl = `${API_URL}/api/health`;
       console.log("🏥 Testando health check:", healthUrl);
       const healthRes = await fetch(healthUrl, {
         method: "GET",
@@ -38,7 +37,7 @@ function LoginForm() {
     } catch (healthErr: any) {
       console.error("❌ Health check falhou:", healthErr);
       setError(
-        `Não foi possível conectar ao servidor. Verifique se o backend está rodando.\n\nURL tentada: ${API_URL}\n\nErro: ${
+        `Não foi possível conectar ao servidor. Verifique se as API Routes estão funcionando.\n\nURL tentada: ${healthUrl}\n\nErro: ${
           healthErr.message || "Timeout ou conexão recusada"
         }`
       );
@@ -111,9 +110,7 @@ function LoginForm() {
           setError(err.message);
         } else {
           setError(
-            `Erro de conexão: Não foi possível conectar ao servidor.\n\nURL configurada: ${
-              API_URL || "não configurada"
-            }\n\nVerifique:\n1. Se o backend está rodando no Railway\n2. Se a variável NEXT_PUBLIC_API_URL está configurada na Vercel\n3. Se a URL está correta (sem barra final)`
+            `Erro de conexão: Não foi possível conectar ao servidor.\n\nVerifique:\n1. Se as API Routes estão funcionando: /api/health\n2. Se as variáveis MONGODB_URI e JWT_SECRET estão configuradas\n3. Se o MongoDB Atlas está acessível\n4. Verifique os logs da Vercel para mais detalhes`
           );
         }
       } else if (

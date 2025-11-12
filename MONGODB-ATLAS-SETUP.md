@@ -48,6 +48,7 @@ Este guia explica como configurar o MongoDB Atlas (gratuito) para usar com a apl
 7. Adicione o nome do banco no final: `/agenda`
 
 **Exemplo de connection string final:**
+
 ```
 mongodb+srv://meuusuario:minhasenha@cluster0.abc123.mongodb.net/agenda
 ```
@@ -55,12 +56,14 @@ mongodb+srv://meuusuario:minhasenha@cluster0.abc123.mongodb.net/agenda
 ### 6. Configurar no Projeto
 
 1. No diretório `backend`, crie um arquivo `.env`:
+
 ```bash
 cd backend
 cp env.example .env
 ```
 
 2. Edite o arquivo `.env` e adicione sua connection string:
+
 ```env
 MONGODB_URI=mongodb+srv://meuusuario:minhasenha@cluster0.abc123.mongodb.net/agenda
 JWT_SECRET=seu-secret-jwt-aqui
@@ -71,29 +74,14 @@ CORS_ORIGIN=http://localhost:3000
 ### 7. Testar a Conexão
 
 1. Inicie o backend:
+
 ```bash
 npm run dev
 ```
 
 2. Você deve ver a mensagem: `✅ Conectado ao MongoDB Atlas`
 
-## 🚀 Configurar no Deploy (Render/Railway/Vercel)
-
-### Render
-
-1. Acesse o dashboard do Render
-2. Vá em "Environment Variables"
-3. Adicione a variável:
-   - **Key**: `MONGODB_URI`
-   - **Value**: `mongodb+srv://usuario:senha@cluster.mongodb.net/agenda`
-
-### Railway
-
-1. Acesse o dashboard do Railway
-2. Vá em "Variables"
-3. Adicione a variável:
-   - **Key**: `MONGODB_URI`
-   - **Value**: `mongodb+srv://usuario:senha@cluster.mongodb.net/agenda`
+## 🚀 Configurar no Deploy (Vercel)
 
 ### Vercel
 
@@ -114,18 +102,23 @@ npm run dev
 ## 🐛 Solução de Problemas
 
 ### Erro: "MONGODB_URI não está definido"
-- Verifique se o arquivo `.env` existe no diretório `backend`
+
+- Verifique se o arquivo `.env.local` existe no diretório `frontend`
 - Verifique se a variável `MONGODB_URI` está configurada corretamente
+- Verifique se a variável está configurada na Vercel (para deploy)
 
 ### Erro: "Authentication failed"
+
 - Verifique se o usuário e senha estão corretos na connection string
 - Verifique se o usuário foi criado no MongoDB Atlas
 
 ### Erro: "Network access denied"
+
 - Verifique se seu IP está na lista de Network Access
 - Para desenvolvimento, adicione `0.0.0.0/0` (permite todos os IPs)
 
 ### Erro: "Server selection timeout"
+
 - Verifique se o cluster está ativo no MongoDB Atlas
 - Verifique se a connection string está correta
 - Verifique sua conexão com a internet
@@ -135,4 +128,3 @@ npm run dev
 - [Documentação MongoDB Atlas](https://docs.atlas.mongodb.com/)
 - [MongoDB Atlas Free Tier](https://www.mongodb.com/cloud/atlas/free)
 - [Connection String Guide](https://docs.atlas.mongodb.com/getting-started/)
-
