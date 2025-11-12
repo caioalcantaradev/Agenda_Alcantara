@@ -7,7 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc -p .",
     "start": "node dist/server.js",
-    "seed": "ts-node src/seed.ts"
+    "seed": "ts-node --esm --experimental-specifier-resolution=node src/seed.ts",
+    "test:connection": "ts-node --esm --experimental-specifier-resolution=node src/scripts/test-connection.ts",
+    "validate:config": "ts-node --esm --experimental-specifier-resolution=node src/scripts/validate-config.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

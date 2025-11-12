@@ -19,26 +19,59 @@ Aplicativo web de agenda compartilhada com login local (email/senha) para dois u
 
 ## 🔧 Configuração
 
-1. Backend
+### 1. Configurar MongoDB Atlas
+
+1. Acesse [MongoDB Atlas](https://cloud.mongodb.com/) e crie uma conta (gratuita)
+2. Crie um novo cluster (escolha o tier gratuito M0)
+3. Configure o acesso:
+   - Na seção "Database Access", crie um usuário com senha
+   - Na seção "Network Access", adicione seu IP (ou `0.0.0.0/0` para permitir todos - apenas para desenvolvimento)
+4. Obtenha a connection string:
+   - Clique em "Connect" no cluster
+   - Escolha "Connect your application"
+   - Copie a connection string (formato: `mongodb+srv://usuario:senha@cluster.mongodb.net/`)
+   - Adicione o nome do banco no final: `mongodb+srv://usuario:senha@cluster.mongodb.net/agenda`
+
+### 2. Backend
 
 ```bash
 cd backend
 npm install
 ```
 
-Crie o arquivo `.env` com:
+Crie o arquivo `.env` baseado no `env.example`:
+
+```bash
+cp env.example .env
+```
+
+Edite o arquivo `.env` com suas credenciais:
 
 ```env
-MONGODB_URI=mongodb+srv://usuario:senha@cluster/db
-JWT_SECRET=troque-este-segredo
+MONGODB_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/agenda
+JWT_SECRET=seu-secret-jwt-aqui
 PORT=5000
 CORS_ORIGIN=http://localhost:3000
 ```
+
+**Importante**: Substitua `usuario:senha` pelos dados do usuário criado no MongoDB Atlas e `cluster.mongodb.net` pelo endereço do seu cluster.
 
 Opcional: execute o seed para criar os 2 usuários iniciais (edite emails/senhas em `src/seed.ts` se desejar):
 
 ```bash
 npm run seed
+```
+
+Teste a conexão com o MongoDB:
+
+```bash
+npm run test:connection
+```
+
+Valide a configuração:
+
+```bash
+npm run validate:config
 ```
 
 Inicie o backend:
@@ -107,8 +140,37 @@ Abra `http://localhost:3000` no navegador.
 
 ## 🚀 Deploy
 
-- Backend: Render/Railway/Servidor próprio
-- Frontend: Vercel/Netlify; configure `NEXT_PUBLIC_API_URL` apontando para o backend
+### Configurar MongoDB Atlas
+
+**IMPORTANTE**: Você precisa configurar o MongoDB Atlas antes de fazer o deploy. O MongoDB do Railway pausou após o período gratuito.
+
+Siga o guia completo em [MONGODB-ATLAS-SETUP.md](./MONGODB-ATLAS-SETUP.md) para:
+
+- Criar conta no MongoDB Atlas (gratuito)
+- Configurar cluster e acesso
+- Obter connection string
+- Configurar no deploy
+
+### Backend
+
+O backend pode ser deployado em qualquer plataforma que suporte Node.js:
+
+- **Render**: Configure a variável `MONGODB_URI` nas variáveis de ambiente
+- **Railway**: Configure a variável `MONGODB_URI` nas variáveis de ambiente (veja [RAILWAY-SETUP.md](./RAILWAY-SETUP.md))
+- **Vercel/Netlify**: Configure as variáveis de ambiente no painel
+- **Servidor próprio**: Configure o `.env` no servidor
+
+**Variáveis de ambiente necessárias no deploy:**
+
+- `MONGODB_URI`: Connection string do MongoDB Atlas (obrigatório)
+- `JWT_SECRET`: Secret para JWT (use uma string aleatória e segura)
+- `PORT`: Porta do servidor (geralmente fornecido pela plataforma)
+- `CORS_ORIGIN`: URL do frontend (ex: `https://seu-app.vercel.app`)
+
+### Frontend
+
+- **Vercel/Netlify**: Configure `NEXT_PUBLIC_API_URL` apontando para o backend
+- Configure também no `.env.local` a URL do backend em produção
 
 ## 📝 Funcionalidades
 
@@ -122,13 +184,27 @@ Abra `http://localhost:3000` no navegador.
 
 ## 🐛 Solução de Problemas
 
-- "A autenticação não abre/funciona":
-  - Verifique `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
-  - Confirme que o domínio está em Authorized JavaScript origins
-- "Eventos não carregam":
-  - Verifique se a Calendar API está habilitada
-  - Confirme `NEXT_PUBLIC_GOOGLE_CALENDAR_ID` (use `primary` ou o ID correto)
-  - Garanta que a agenda está compartilhada com a conta logada
+### Erro: "MONGODB_URI não está definido"
+
+- Verifique se o arquivo `.env` existe no diretório `backend`
+- Verifique se a variável `MONGODB_URI` está configurada corretamente
+
+### Erro: "Authentication failed" ou "Network access denied"
+
+- Verifique se o usuário e senha estão corretos na connection string
+- Verifique se seu IP está na lista de Network Access no MongoDB Atlas
+- Verifique se o cluster está ativo (não pausado)
+
+### Erro: "Failed to fetch" no frontend
+
+- Verifique se `NEXT_PUBLIC_API_URL` está configurada corretamente
+- Verifique se o backend está rodando
+- Verifique se o CORS está configurado corretamente
+
+### Erro: "Email ou senha incorretos"
+
+- Execute o seed: `npm run seed` no backend
+- Verifique se os usuários foram criados corretamente
 
 ## 📄 Licença
 

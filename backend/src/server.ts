@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "./config.js";
-import { connectMongo } from "./db.js";
+import { connectMongo, disconnectMongo } from "./db.js";
 import { authRouter } from "./routes/auth.js";
 import { eventsRouter } from "./routes/events.js";
 import { seedUsersIfNeeded } from "./seed-auto.js";
@@ -109,21 +109,22 @@ async function bootstrap() {
     });
 
     // Graceful shutdown
-    process.on("SIGTERM", () => {
-      console.log("🛑 SIGTERM recebido, encerrando servidor...");
-      server.close(() => {
-        console.log("✅ Servidor encerrado");
+    const gracefulShutdown = async (signal: string) => {
+      console.log(`🛑 ${signal} recebido, encerrando servidor...`);
+      server.close(async () => {
+        console.log("✅ Servidor HTTP encerrado");
+        try {
+          await disconnectMongo();
+          console.log("✅ Desconectado do MongoDB");
+        } catch (error) {
+          console.error("❌ Erro ao desconectar do MongoDB:", error);
+        }
         process.exit(0);
       });
-    });
+    };
 
-    process.on("SIGINT", () => {
-      console.log("🛑 SIGINT recebido, encerrando servidor...");
-      server.close(() => {
-        console.log("✅ Servidor encerrado");
-        process.exit(0);
-      });
-    });
+    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
   } catch (error) {
     console.error("❌ Falha ao iniciar servidor:", error);
     process.exit(1);

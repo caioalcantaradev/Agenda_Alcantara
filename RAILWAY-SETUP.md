@@ -15,26 +15,39 @@ O Railway **PRECISA** estar configurado corretamente para funcionar. Siga estes 
 
 **IMPORTANTE:** Sem essa configuração, o Railway não vai encontrar o `package.json` e vai tentar executar comandos errados!
 
-### 2. Variáveis de Ambiente
+### 2. Configurar MongoDB Atlas
+
+**IMPORTANTE**: O MongoDB do Railway pausou após o período gratuito. Você precisa usar MongoDB Atlas (gratuito).
+
+1. Siga o guia em [MONGODB-ATLAS-SETUP.md](./MONGODB-ATLAS-SETUP.md) para configurar o MongoDB Atlas
+2. Obtenha sua connection string do MongoDB Atlas
+3. Configure a variável `MONGODB_URI` no Railway com sua connection string
+
+### 3. Variáveis de Ambiente
 
 No mesmo painel de Settings, vá em **Variables** e configure:
 
 ```
-MONGODB_URI=mongodb+srv://caioalcantaradev_db_user:Cvv2BdcvOWvNPJEM@agenda-alcantara.dxxyho2.mongodb.net/?appName=Agenda-Alcantara
+MONGODB_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/agenda
 JWT_SECRET=seu-segredo-jwt-aqui
 PORT=5000
-CORS_ORIGIN=https://agenda-alcantara.vercel.app/
+CORS_ORIGIN=https://agenda-alcantara.vercel.app
 ```
 
-### 3. Verificar Deploy
+**Importante**: 
+- Substitua `MONGODB_URI` pela sua connection string do MongoDB Atlas
+- Não use a connection string do Railway (ela não funciona mais)
+- Veja [MONGODB-ATLAS-SETUP.md](./MONGODB-ATLAS-SETUP.md) para mais detalhes
 
-Após configurar o Root Directory:
+### 4. Verificar Deploy
+
+Após configurar o Root Directory e as variáveis de ambiente:
 1. Vá em **Deployments**
 2. Clique em **Redeploy** ou **Deploy** novamente
 3. O Railway deve detectar o `nixpacks.toml` no diretório `backend`
 4. O build deve funcionar corretamente
 
-### 4. Verificar Logs
+### 5. Verificar Logs
 
 Se ainda houver problemas:
 1. Vá em **Deployments**
@@ -45,9 +58,12 @@ Se ainda houver problemas:
 ## ✅ Checklist
 
 - [ ] Root Directory configurado como `backend`
-- [ ] Variáveis de ambiente configuradas
+- [ ] MongoDB Atlas configurado (veja [MONGODB-ATLAS-SETUP.md](./MONGODB-ATLAS-SETUP.md))
+- [ ] Variável `MONGODB_URI` configurada no Railway com connection string do MongoDB Atlas
+- [ ] Variáveis de ambiente configuradas (`JWT_SECRET`, `CORS_ORIGIN`, etc.)
 - [ ] Deploy realizado após configurar Root Directory
 - [ ] Logs mostram que o build está funcionando
+- [ ] Logs mostram "✅ Conectado ao MongoDB Atlas"
 
 ## 🐛 Problemas Comuns
 

@@ -1,9 +1,12 @@
 # Node
 node_modules/
 npm-debug.log*
+yarn-error.log*
 
 # Env files
 .env
+.env.local
+.env.*.local
 backend/.env
 frontend/.env
 frontend/.env.local
@@ -11,22 +14,41 @@ frontend/.env.local
 # Next.js
 .next/
 out/
+.next/cache/
 
 # Build outputs
 dist/
 backend/dist/
+build/
 
 # Logs
-logs
+logs/
 *.log
 *.log.*
 
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
 # Editor
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
 
 
