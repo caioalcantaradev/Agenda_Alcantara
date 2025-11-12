@@ -102,27 +102,29 @@ Abra `http://localhost:3000` no navegador.
 
 **IMPORTANTE**: Este projeto está configurado para rodar **tudo na Vercel** (frontend + backend via API Routes).
 
-### Configurar MongoDB Atlas
+### 1. Configurar MongoDB Atlas
 
-Siga o guia completo em [MONGODB-ATLAS-SETUP.md](./MONGODB-ATLAS-SETUP.md) para:
+1. Acesse [MongoDB Atlas](https://cloud.mongodb.com/) e crie uma conta (gratuita)
+2. Crie um novo cluster (escolha o tier gratuito M0)
+3. Configure o acesso:
+   - Na seção "Database Access", crie um usuário com senha
+   - Na seção "Network Access", adicione `0.0.0.0/0` (permite todos os IPs)
+4. Obtenha a connection string:
+   - Clique em "Connect" no cluster
+   - Escolha "Connect your application"
+   - Copie a connection string (formato: `mongodb+srv://usuario:senha@cluster.mongodb.net/`)
+   - Adicione o nome do banco no final: `mongodb+srv://usuario:senha@cluster.mongodb.net/agenda`
 
-- Criar conta no MongoDB Atlas (gratuito)
-- Configurar cluster e acesso
-- Obter connection string
-- Configurar Network Access para `0.0.0.0/0`
+### 2. Deploy na Vercel
 
-### Deploy na Vercel
-
-Siga o guia completo em [VERCEL-SETUP.md](./VERCEL-SETUP.md) para:
-
-- Configurar variáveis de ambiente na Vercel
-- Fazer deploy do projeto
-- Verificar se está funcionando
-
-**Variáveis de ambiente necessárias na Vercel:**
-
-- `MONGODB_URI`: Connection string do MongoDB Atlas (obrigatório)
-- `JWT_SECRET`: Secret para JWT (use uma string aleatória e segura)
+1. Acesse [Vercel](https://vercel.com/) e conecte seu repositório GitHub
+2. Configure o projeto:
+   - Selecione o diretório `frontend` como root (se necessário)
+   - Framework: Next.js (detectado automaticamente)
+3. Configure as variáveis de ambiente:
+   - `MONGODB_URI`: Connection string do MongoDB Atlas (obrigatório)
+   - `JWT_SECRET`: Secret para JWT (use uma string aleatória e segura)
+4. Faça o deploy
 
 **Nota**: O frontend e o backend rodam no mesmo projeto na Vercel. As API Routes são Serverless Functions que se conectam ao MongoDB Atlas.
 
