@@ -82,8 +82,9 @@ function LoginForm() {
       const data = await res.json();
       if (typeof window !== "undefined") {
         localStorage.setItem("ga_token", data.token);
+        // Redireciona após salvar o token
+        window.location.href = "/";
       }
-      window.location.href = "/";
     } catch (err: any) {
       console.error("❌ Erro no login:", err);
       console.error("URL usada:", url);

@@ -21,7 +21,7 @@ export interface CreateEventData {
   endDateTime: string;
 }
 
-const BASE_URL = `${API_URL}/api`;
+const BASE_URL = API_URL;
 
 function toRfc3339WithOffset(localDateTime: string): string {
   // Converte "YYYY-MM-DDTHH:mm" para RFC3339 com timezone local: YYYY-MM-DDTHH:mm:ss±HH:MM

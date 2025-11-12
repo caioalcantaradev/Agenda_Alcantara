@@ -21,7 +21,7 @@ export const useAuth = () => {
     }
     const run = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/auth/me`, {
+        const res = await fetch(`${API_URL}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("unauthorized");
@@ -38,7 +38,7 @@ export const useAuth = () => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await fetch(`${API_URL}/api/auth/login`, {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

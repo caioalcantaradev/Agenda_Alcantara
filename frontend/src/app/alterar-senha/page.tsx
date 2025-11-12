@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { API_URL } from "@/lib/api-client";
 
 export default function ChangePasswordPage() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -17,8 +16,9 @@ export default function ChangePasswordPage() {
     setMessage("");
     setLoading(true);
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
-      const res = await fetch(`${API_URL}/api/auth/change-password`, {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("ga_token") : null;
+      const res = await fetch(`${API_URL}/auth/change-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,14 +42,20 @@ export default function ChangePasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="max-w-md w-full space-y-8 px-4">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Alterar Senha</h1>
-          <p className="text-gray-600 dark:text-gray-400">Defina sua nova senha para continuar usando o app.</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            Alterar Senha
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Defina sua nova senha para continuar usando o app.
+          </p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow rounded-lg">
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha atual (opcional no primeiro acesso)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Senha atual (opcional no primeiro acesso)
+              </label>
               <input
                 type="password"
                 value={currentPassword}
@@ -58,7 +64,9 @@ export default function ChangePasswordPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nova senha</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Nova senha
+              </label>
               <input
                 type="password"
                 value={newPassword}
@@ -82,4 +90,3 @@ export default function ChangePasswordPage() {
     </div>
   );
 }
-
