@@ -18,9 +18,13 @@ import EventDetailsModal from "./EventDetailsModal";
 
 interface WeeklyCalendarProps {
   onDateClick: (date: Date) => void;
+  refreshTrigger?: number;
 }
 
-export default function WeeklyCalendar({ onDateClick }: WeeklyCalendarProps) {
+export default function WeeklyCalendar({
+  onDateClick,
+  refreshTrigger,
+}: WeeklyCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +51,7 @@ export default function WeeklyCalendar({ onDateClick }: WeeklyCalendarProps) {
 
   useEffect(() => {
     loadEvents();
-  }, [currentDate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentDate, refreshTrigger]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getEventsForDate = (date: Date) => {
     return events.filter((event) => {

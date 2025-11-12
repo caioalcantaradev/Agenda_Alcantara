@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { eventsService } from "@/lib/events";
 import { useState } from "react";
+import { useNotification } from "@/hooks/useNotification";
 
 interface Event {
   id: string;
@@ -34,6 +35,7 @@ export default function EventDetailsModal({
   onEventUpdated,
   onEventDeleted,
 }: EventDetailsModalProps) {
+  const { showSuccess, showError } = useNotification();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,11 +46,12 @@ export default function EventDetailsModal({
     setLoading(true);
     try {
       await eventsService.deleteEvent(event.id);
+      showSuccess(`Compromisso "${event.summary}" excluído com sucesso!`);
       onEventDeleted();
       onClose();
     } catch (error) {
       console.error("Erro ao deletar evento:", error);
-      alert("Erro ao deletar evento. Tente novamente.");
+      showError("Erro ao excluir evento. Tente novamente.");
     } finally {
       setLoading(false);
       setShowDeleteConfirm(false);
@@ -108,9 +111,13 @@ export default function EventDetailsModal({
               Data e Hora
             </label>
             <p className="text-gray-700">
-              {format(new Date(event.start.dateTime), "dd 'de' MMMM 'de' yyyy", {
-                locale: ptBR,
-              })}
+              {format(
+                new Date(event.start.dateTime),
+                "dd 'de' MMMM 'de' yyyy",
+                {
+                  locale: ptBR,
+                }
+              )}
             </p>
             <p className="text-gray-600 text-sm">
               {format(new Date(event.start.dateTime), "HH:mm")} -{" "}
@@ -214,6 +221,7 @@ function EventEditModal({
   onClose: () => void;
   onEventUpdated: () => void;
 }) {
+  const { showSuccess, showError } = useNotification();
   const [formData, setFormData] = useState({
     summary: event.summary,
     description: event.description || "",
@@ -238,11 +246,12 @@ function EventEditModal({
         startDateTime: formData.startTime,
         endDateTime: formData.endTime,
       });
+      showSuccess(`Compromisso "${formData.summary}" atualizado com sucesso!`);
       onEventUpdated();
       onClose();
     } catch (error) {
       console.error("Erro ao atualizar evento:", error);
-      alert("Erro ao atualizar evento. Tente novamente.");
+      showError("Erro ao atualizar evento. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -261,9 +270,7 @@ function EventEditModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Editar Evento
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-800">Editar Evento</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -319,12 +326,12 @@ function EventEditModal({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Início *
               </label>
-            <input
+              <input
                 type="datetime-local"
                 name="startTime"
                 value={formData.startTime}
                 onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 required
               />
             </div>
@@ -333,12 +340,12 @@ function EventEditModal({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Fim *
               </label>
-            <input
+              <input
                 type="datetime-local"
                 name="endTime"
                 value={formData.endTime}
                 onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 required
               />
             </div>
@@ -365,4 +372,3 @@ function EventEditModal({
     </div>
   );
 }
-

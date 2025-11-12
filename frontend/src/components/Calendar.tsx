@@ -20,9 +20,13 @@ import EventDetailsModal from "./EventDetailsModal";
 
 interface CalendarProps {
   onDateClick: (date: Date) => void;
+  refreshTrigger?: number;
 }
 
-export default function Calendar({ onDateClick }: CalendarProps) {
+export default function Calendar({
+  onDateClick,
+  refreshTrigger,
+}: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +56,7 @@ export default function Calendar({ onDateClick }: CalendarProps) {
 
   useEffect(() => {
     loadEvents();
-  }, [currentDate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentDate, refreshTrigger]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getEventsForDate = (date: Date) => {
     return events.filter((event) => {
@@ -88,10 +92,12 @@ export default function Calendar({ onDateClick }: CalendarProps) {
 
   const handleEventUpdated = () => {
     loadEvents();
+    // Força o recarregamento quando um evento é atualizado
   };
 
   const handleEventDeleted = () => {
     loadEvents();
+    // Força o recarregamento quando um evento é deletado
   };
 
   const goToPreviousMonth = () => {

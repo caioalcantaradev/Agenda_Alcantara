@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { eventsService, CreateEventData } from "@/lib/events";
+import { useNotification } from "@/hooks/useNotification";
 
 interface EventModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function EventModal({
   selectedDate,
   onEventCreated,
 }: EventModalProps) {
+  const { showSuccess, showError } = useNotification();
   const [formData, setFormData] = useState({
     summary: "",
     description: "",
@@ -54,12 +56,13 @@ export default function EventModal({
       };
 
       await eventsService.createEvent(eventData);
+      showSuccess(`Compromisso "${formData.summary}" adicionado com sucesso!`);
       onEventCreated();
       onClose();
       setFormData({ summary: "", description: "", startTime: "", endTime: "" });
     } catch (error) {
       console.error("Erro ao criar evento:", error);
-      alert("Erro ao criar evento. Tente novamente.");
+      showError("Erro ao criar evento. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -184,4 +187,3 @@ export default function EventModal({
     </div>
   );
 }
-

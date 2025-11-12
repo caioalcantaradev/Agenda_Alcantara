@@ -17,6 +17,7 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewType, setViewType] = useState<ViewType>("month");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -53,7 +54,8 @@ export default function HomePage() {
   };
 
   const handleEventCreated = () => {
-    // O calendário será atualizado automaticamente
+    // Força o recarregamento dos calendários
+    setRefreshTrigger((prev) => prev + 1);
     setIsModalOpen(false);
   };
 
@@ -187,11 +189,24 @@ export default function HomePage() {
         </div>
 
         {/* Calendar View */}
-        {viewType === "month" && <Calendar onDateClick={handleDateClick} />}
-        {viewType === "week" && (
-          <WeeklyCalendar onDateClick={handleDateClick} />
+        {viewType === "month" && (
+          <Calendar
+            onDateClick={handleDateClick}
+            refreshTrigger={refreshTrigger}
+          />
         )}
-        {viewType === "day" && <DailyCalendar onDateClick={handleDateClick} />}
+        {viewType === "week" && (
+          <WeeklyCalendar
+            onDateClick={handleDateClick}
+            refreshTrigger={refreshTrigger}
+          />
+        )}
+        {viewType === "day" && (
+          <DailyCalendar
+            onDateClick={handleDateClick}
+            refreshTrigger={refreshTrigger}
+          />
+        )}
 
         <EventModal
           isOpen={isModalOpen}

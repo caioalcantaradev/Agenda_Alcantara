@@ -9,9 +9,13 @@ import EventDetailsModal from "./EventDetailsModal";
 
 interface DailyCalendarProps {
   onDateClick: (date: Date) => void;
+  refreshTrigger?: number;
 }
 
-export default function DailyCalendar({ onDateClick }: DailyCalendarProps) {
+export default function DailyCalendar({
+  onDateClick,
+  refreshTrigger,
+}: DailyCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +44,7 @@ export default function DailyCalendar({ onDateClick }: DailyCalendarProps) {
 
   useEffect(() => {
     loadEvents();
-  }, [currentDate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentDate, refreshTrigger]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const hasConflict = (event: Event) => {
     const eventStart = new Date(event.start.dateTime);
