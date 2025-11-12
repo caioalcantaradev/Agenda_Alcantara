@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { useEventReminders } from "@/hooks/useEventReminders";
 import Calendar from "@/components/Calendar";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import DailyCalendar from "@/components/DailyCalendar";
@@ -18,6 +19,9 @@ export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewType, setViewType] = useState<ViewType>("month");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Inicializa o sistema de lembretes de eventos
+  useEventReminders();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
